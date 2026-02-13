@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
 import type { HotelDetailsResponse, LiteRate, LiteRatesItem, RatesSearchResponse } from "@/types/liteapi";
 
 type HotelResponse = {
@@ -57,7 +57,7 @@ function groupOffers(item?: LiteRatesItem, hotel?: HotelDetailsResponse["data"])
   return Array.from(groups.values());
 }
 
-export default function HotelDetailsPage() {
+function HotelContent() {
   const { hotelId } = useParams<{ hotelId: string }>();
   const params = useSearchParams();
 
@@ -221,5 +221,13 @@ export default function HotelDetailsPage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function HotelDetailsPage() {
+  return (
+    <Suspense fallback={<div className="rounded-2xl border border-slate-200 bg-white p-6">Loading hotel...</div>}>
+      <HotelContent />
+    </Suspense>
   );
 }
