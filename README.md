@@ -1,4 +1,4 @@
-# Booking- (LiteAPI Booking MVP)
+# Havely (LiteAPI Booking MVP)
 
 A Next.js + TypeScript booking platform MVP inspired by ZZZello and powered by LiteAPI.
 
@@ -42,10 +42,12 @@ cp .env.example .env.local
 
 Required:
 
-- `LITEAPI_KEY`
+- `LITEAPI_KEY` (single LiteAPI server key, e.g. `sand_...` or production key)
 - `LITEAPI_ENV` (`sandbox` or `live`)
 - `NEXT_PUBLIC_LITEAPI_ENV` (must match `LITEAPI_ENV`)
 - `SESSION_SECRET`
+
+> LiteAPI does **not** use a Stripe-style public/secret key pair for this integration — only one server-side `LITEAPI_KEY` is needed.
 
 ### 3) Run dev server
 
