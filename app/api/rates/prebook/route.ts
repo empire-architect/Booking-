@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import { prebookOffer } from "@/lib/liteapi/service";
 import { prebookSchema } from "@/lib/validation/liteapi";
-import { BookingContext, encodeSigned, getBookingCookieName } from "@/lib/session";
+import {
+  BookingContext,
+  encodeBookingSessionCookie,
+  getBookingCookieName,
+} from "@/lib/session";
+import { createBookingSession } from "@/lib/session-store";
 
 export async function POST(request: Request) {
   try {
@@ -39,8 +44,10 @@ export async function POST(request: Request) {
       amount: prebook.data.price,
     };
 
+    const sid = await createBookingSession(context, 60 * 30);
+
     const response = NextResponse.json(prebook);
-    response.cookies.set(getBookingCookieName(), encodeSigned(context), {
+    response.cookies.set(getBookingCookieName(), encodeBookingSessionCookie(sid), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

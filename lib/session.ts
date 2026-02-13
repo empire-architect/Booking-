@@ -2,6 +2,10 @@ import crypto from "node:crypto";
 
 const DEFAULT_COOKIE_NAME = "booking_ctx";
 
+export type BookingSessionCookie = {
+  sid: string;
+};
+
 function getSecret() {
   return process.env.SESSION_SECRET || "dev-session-secret-change-me";
 }
@@ -34,6 +38,14 @@ export function decodeSigned<T>(value: string | undefined | null): T | null {
 
 export function getBookingCookieName() {
   return process.env.BOOKING_CONTEXT_COOKIE || DEFAULT_COOKIE_NAME;
+}
+
+export function encodeBookingSessionCookie(sid: string) {
+  return encodeSigned<BookingSessionCookie>({ sid });
+}
+
+export function decodeBookingSessionCookie(value: string | undefined | null) {
+  return decodeSigned<BookingSessionCookie>(value);
 }
 
 export type BookingContext = {

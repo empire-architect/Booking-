@@ -72,11 +72,12 @@ Open: [http://localhost:3000](http://localhost:3000)
 4. **Checkout** (`/checkout`)  
    - Collect guest details
    - Calls `/api/rates/prebook`
-   - Stores signed booking context cookie
+   - Creates a server-side booking session + signed cookie containing only session id
    - Mounts LiteAPI Payment SDK
 
 5. **Confirm** (`/booking/confirm`)  
-   Calls `/api/rates/book` using secure booking context and shows confirmation details.
+   Calls `/api/rates/book` using secure booking session context and shows confirmation details.
+   Repeated clicks are idempotent within session TTL (returns cached booking result).
 
 ---
 
@@ -97,15 +98,16 @@ All LiteAPI requests are executed server-side.
 - Do **not** commit real LiteAPI keys
 - Keep `SESSION_SECRET` strong and private
 - Ensure `NEXT_PUBLIC_LITEAPI_ENV` and `LITEAPI_ENV` are aligned
+- Keep server session storage on persistent volume or move to Redis/Postgres
 - In production, set HTTPS and secure cookies
 
 ---
 
 ## Known Limitations / Next Improvements
 
-1. **Payment finalization coupling**
-   - Current MVP uses a signed cookie context between prebook and book.
-   - Improve with durable server session store (Redis/DB) and explicit idempotency keys.
+1. **Session store durability**
+   - Current implementation uses a local file store for booking sessions/idempotency.
+   - For scale/high availability, migrate to Redis/Postgres-backed session store.
 
 2. **Rate refresh before final book**
    - Add re-validation step before payment/book to reduce stale-offer risk.
