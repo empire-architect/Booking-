@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import type { LiteHotelCard, RatesSearchResponse } from "@/types/liteapi";
 
@@ -28,7 +28,7 @@ function buildPriceMap(data: RatesSearchResponse["data"]): PriceMap {
   return map;
 }
 
-export default function ResultsPage() {
+function ResultsContent() {
   const params = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -171,5 +171,13 @@ export default function ResultsPage() {
         })}
       </div>
     </div>
+  );
+}
+
+export default function ResultsPage() {
+  return (
+    <Suspense fallback={<div className="rounded-2xl border border-slate-200 bg-white p-6">Loading search...</div>}>
+      <ResultsContent />
+    </Suspense>
   );
 }

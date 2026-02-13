@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { PaymentSdk } from "@/components/payment-sdk";
@@ -12,7 +12,7 @@ type Holder = {
   email: string;
 };
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const params = useSearchParams();
 
   const [holder, setHolder] = useState<Holder>({
@@ -186,5 +186,13 @@ export default function CheckoutPage() {
         </div>
       </aside>
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div className="rounded-2xl border border-slate-200 bg-white p-6">Loading checkout...</div>}>
+      <CheckoutContent />
+    </Suspense>
   );
 }
